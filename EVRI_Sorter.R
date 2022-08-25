@@ -82,7 +82,7 @@ CleanMessyStrings <- function(DATA, variables, KeepMessy = T) {
     )
 }
 
-## Useful Variable Collections ####
+  ## Useful Variable Collections ####
 
 # Contains all messy string variables from the input DATA.
 # These are facets and should be excluded from keyword searches.
@@ -130,8 +130,7 @@ AllContextFields <- c(
 
 # 1.
 ### Set the directory where the datafiles are stored.
-# At the moment this requires multiple (at least 2) files in .csv format.
-# This is because for some reason the EVRI data can't be downloaded in a single
+# For some reason the EVRI data can't be downloaded in a single
 # batch, and requires multiple downloads. I simply downloaded each region
 # individually, and have collected the data within R here, being sure to drop
 # duplicate entries. This should give us the whole EVRI database. You could
@@ -141,6 +140,10 @@ DataDirectory <- 'C:/Users/avery/Desktop/Research/USDA_ESV/EVRI'
 
 #2.
 ### Construct your search in the "Your Query" section.
+# You can use both logical operators and/or regex keyword / pattern matching.
+
+#3.
+### Summary and Table Outputs
 
 #### Data Read-In ####
 # This will read every file of the type csv in the directory given.
@@ -335,10 +338,10 @@ DATAexpanded <- DATAexpanded %>%
       )
   )
 
-#### Your Query ####
+#### Queries / Query Help ####
 
 ## Here is a list of EVRI variables which appear to be messy strings: ###
-# It seems they never repeat level names, so we dont have to handle duplicates.
+# It seems they never repeat level names, so we don't have to handle duplicates.
 # Available levels are variable names in DATAexpanded coded as dummies.
 #
 # use MessyStringLevels(DATA, "variable") to see available levels.
@@ -440,8 +443,7 @@ QueryOut <- DATAexpanded %>%
     #   "(?i)Birds|Bees"
     #   )
     #
-    #####
-    
+    ##### Your Query #####
  # Create your query here.   
     Primary == T &
     (Journal == T | `Report (government/non-government)` == T) &
@@ -465,14 +467,29 @@ QueryOut <- DATAexpanded %>%
       ),
       "(?i)Wolf|Wolves"
     )
-    
-    
-    ####
-  )
+ 
+  ####
+)
 
 #### Summary and Table Outputs ####
 
+# subsetting to relevant vars.
+QueryResults <- QueryOut %>%
+  transmute(
+    Author.s.,
+    Study.Title,
+    Study.source,
+    Publication.year,
+    Document.type,
+    Years.of.data
+  )
 
+QuerySummary <- QueryOut %>%
+  summarise(
+    Studies = dplyr::n()
+  )
+  
+  
 
 # Debug stuff #####
 
