@@ -486,7 +486,12 @@ QueryResults <- QueryOut %>%
 
 QuerySummary <- QueryOut %>%
   summarise(
-    Studies = dplyr::n()
+    Studies = dplyr::n(),
+    PubYearMax = max(Publication.year),
+    PubYearMin = min(Publication.year),
+    DataYearMax = max(MessyStringLevels(.,"Years.of.data")),
+    DataYearMin = min(MessyStringLevels(.,"Years.of.data")),
+    Countries = list(MessyStringLevels(., "Country"))
   )
   
   
