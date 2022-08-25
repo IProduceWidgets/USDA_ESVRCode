@@ -199,7 +199,140 @@ DATAexpanded <- DATAexpanded[,c(1:length(DATAexpanded))]
 # of their sub-tiers are 1. This has to be done by hand though:
 DATAexpanded <- DATAexpanded %>%
   mutate(
-    
+    # Environmental Assets
+    `Water General` = if_else(
+          (
+            `Water General`   == 1 |
+            `Fresh water`     == 1 |
+            `Salt water`      == 1 |
+            `Drinking water`  == 1 |
+            `Ground water`    == 1 |
+            Estuaries         == 1 |
+            Canals            == 1
+          ),
+        1,0
+      ),
+    `Land General` = if_else(
+          (
+            `Land General`                  == 1 |
+            Landscape                       == 1 |
+            `Wetlands/constructed wetlands` == 1 |
+            `Parks and open spaces`         == 1 |
+            `Agricultural land`             == 1 |
+            Beach                           == 1 |
+            Soil                            == 1 |
+            `Surface mining reclamation`    == 1
+          ),
+        1,0
+      ),
+    Animals = if_else(
+          (
+            Animals               == 1 |
+            Fish                  == 1 |
+            Mammals               == 1 |
+            Birds                 == 1 |
+            `Endangered species`  == 1 |
+            Invertebrates         == 1
+          ),
+        1,0
+      ),
+    Plants = if_else(
+          (
+            Plants            == 1 |
+            Forest            == 1 |
+            `Trees or Plants` == 1 |
+            Woodland          == 1 |
+            Crops             == 1 |
+            Riparian          == 1 |
+            Rainforest        == 1 |
+            Heather           == 1
+          ),
+        1,0
+      ),
+    Human = if_else(
+          (
+            Human           == 1 |
+            `Human health`  == 1 |
+            `Human capital` == 1 
+          ),
+        1,0
+      ),
+    `Air General` = if_else(
+          (
+            `Air General` == 1 |
+            Local         == 1 |
+            Regional      == 1 |
+            Global        == 1
+          ),
+        1,0
+      ),
+    `Man-Made Environment / Infrastructure` = if_else(
+          (
+            `Man-Made Environment / Infrastructure` == 1 |
+            `Other assets`                          == 1 |
+            Buildings                               == 1 |
+            `Flood control/dams`                    == 1 |
+            `Cultural monuments`                    == 1 |
+            `Weather information`                   == 1 
+          ),
+        1,0
+      ),
+    `Pro-Environmental Measures` = if_else( #Not in original Metadata.
+          (
+            `Eco-Labels and Certifications` == 1 |
+            Offsets                         == 1
+          ),
+        1,0
+      ),
+    `Micro-organism` = if_else( # for some reason this isn't in General.environmental.assets
+          (
+            `Micro-organism`  == 1 |
+            Fungi             == 1 |
+            Bacteria          == 1 |
+            Viruses           == 1
+          ),
+        1,0
+      ),
+    # Valuation Techniques
+    `Stated Preference or Simulated Market Price` = if_else(
+          (
+            `Stated Preference or Simulated Market Price`             == 1 |
+            `Contingent valuation - dichotomous choice (referendum)`  == 1 |
+            `Contingent valuation - open ended`                       == 1 |
+            `Choice experiment`                                       == 1 |
+            `Contingent valuation - payment card`                     == 1 |
+            `Contingent valuation - iterative bidding`                == 1 |
+            `Conjoint analysis`                                       == 1 |
+            `Combined revealed and stated preference`                 == 1 |
+            `Contingent ranking`                                      == 1
+          ),
+        1,0
+      ),
+    `Revealed Preference` = if_else(
+          (
+            `Revealed Preference`                                   == 1 |
+            `Hedonic property`                                      == 1 |
+            `Travel cost method - single site`                      == 1 |
+            `Travel cost method - multi-site - regional / hedonic`  == 1 |
+            `Travel cost method - RUM`                              == 1 |
+            `Averting behavior (preventing, defensive)`             == 1 |
+            `Count data models`                                     == 1 |
+            `Hedonic wage`                                          == 1 |
+            `Life satisfaction`                                     == 1
+          ),
+        1,0
+      ),
+    `Actual Market Pricing Methods` = if_else(
+          (
+            `Actual Market Pricing Methods`             == 1 |
+            `Actual expenditure/market price of output` == 1 |
+            `Replacement costs`                         == 1 |
+            `Change in productivity`                    == 1 |
+            `Experimental cash market value`            == 1 |
+            `Demand analysis`                           == 1
+          ),
+        1,0
+      )
   )
 
 #### Your Query ####
@@ -271,7 +404,10 @@ QueryOut <- DATAexpanded %>%
     #
     #
     # Multiple context field variables can be searched over by passing them to
-    # str_detect concatenated.
+    # str_detect concatenated. 
+    #   returns true for any occurrence in the contexts (a logical 'OR').
+    #   You could of course use two calls of str_detect to get an 'AND'.
+    #   The 'NOT' operator (!) is also permitted, though it seems less useful.
     #
     # Primary == T & str_detect(
     #   paste0(
@@ -306,41 +442,36 @@ QueryOut <- DATAexpanded %>%
     #
     #####
     
-    # Primary == T & str_detect(
-    #   paste0(
-    #     Study.Title,
-    #     Country,
-    #     State...province,
-    #     Location,
-    #     Study.population.characteristics,
-    #     Specific.environmental.goods..services.or.asset,
-    #     Measure.of.environmental.change,
-    #     Specific.environmental.stressor,
-    #     Study.methodology.description,
-    #     Information.on.the.valuation.equation.function,
-    #     Estimated.values,
-    #     Discount.rate,
-    #     Abstract..English.,
-    #     Abstract..French.
-    #   ),
-    #   "(?i)Birds|Bees"
-    # )
-    
-    Primary == T & 
-    Journal == T &
-    (
-      Fish == T | 
-      Mammals == T | 
-      `Endangered species` == T | 
-      Birds == T | 
-      Invertebrates == T |
-      Animals == T
+ # Create your query here.   
+    Primary == T &
+    (Journal == T | `Report (government/non-government)` == T) &
+    Animals == T &
+    str_detect(
+      paste0(
+        Study.Title,
+        Country,
+        State...province,
+        Location,
+        Study.population.characteristics,
+        Specific.environmental.goods..services.or.asset,
+        Measure.of.environmental.change,
+        Specific.environmental.stressor,
+        Study.methodology.description,
+        Information.on.the.valuation.equation.function,
+        Estimated.values,
+        Discount.rate,
+        Abstract..English.,
+        Abstract..French.
+      ),
+      "(?i)Wolf|Wolves"
     )
+    
     
     ####
   )
 
 #### Summary and Table Outputs ####
+
 
 
 # Debug stuff #####
