@@ -1,22 +1,13 @@
 ## THIS CODE IS FOR PULLING CUSTOM QUERIES FROM THE EVRI DATABASE ##
-
-#### HOW TO USE THIS SCRIPT: ####
-
-### Set the directory where the datafiles are stored.
-# At the moment this requires multiple (at least 2) files in .csv format.
-# This is because for some reason the EVRI data can't be downloaded in a single
-# batch, and requires multiple downloads. I simply downloaded each region
-# individually, and have collected the data within R here, being sure to drop
-# duplicate entries. This should give us the whole EVRI database. You could
-# Instead include only a subset of the database if you wanted for some reason.
-
-DataDirectory <- 'C:/Users/avery/Desktop/Research/USDA_ESV/EVRI'
-
-#### Libraries / functions ####
+#### Libraries ####
+require(rlang)
 require(stringi)
 require(data.table)
 require(tidyr)
 require(dplyr)
+require(stringr)
+
+#### Functions ####
 
 ## The function MessyStringLevels returns all levels of the messy string
 # variable which is passed to it (with messy values seperated by '|').
@@ -67,7 +58,10 @@ ColToDummy <- function(DATA, variable) {
   mat[coords] <- 1    
   
   #Bind the mat to original data.table
-  return(cbind(DATA, mat))
+  #return(cbind(DATA, mat))
+  
+  #Return the new dummy variables
+  return(as.data.frame(mat))
   
 }
 
@@ -78,14 +72,75 @@ ColToDummy <- function(DATA, variable) {
 CleanMessyStrings <- function(DATA, variables, KeepMessy = T) {
   TempDF <- DATA
   
-  for (i in length(variables)) {
-    TempDF <- ColToDummy(DATA, variables[i])
+  for (i in 1:length(variables)) {
+    Temp <- ColToDummy(DATA, variables[i])
+    TempDF <- cbind(TempDF, Temp)
   }
   
   return(
-    if(KeepMessy == T) TempDF else TempDF %>% select(-variables)
+    if(KeepMessy == T) TempDF else TempDF %>% select(-all_of(variables))
     )
 }
+
+## Useful Variable Collections ####
+
+# Contains all messy string variables from the input DATA.
+# These are facets and should be excluded from keyword searches.
+AllMessyStrings <- c(
+  'Country',
+  'General.environmental.assets',
+  'General.type.of.goods.and.services.valued',
+  'Environmental.stressor',
+  'Study.type',
+  'Available.information.within.study',
+  'Years.of.data',
+  'Economic.measure.s.',
+  'Valuation.technique.s.',
+  'Document.type' # this is not actually messy, but it is a facet variable.
+)
+
+# Contains all publication info.
+PublicationInfo <- c(
+  'Author.s.',
+  'Study.Title',
+  'Study.source',
+  'Publication.year',
+  'Document.type'
+)
+
+# Contains all context fields (mostly paragraphs of text).
+AllContextFields <- c(
+  'Study.Title',
+  'Country',
+  'State...province',
+  'Location',
+  'Study.population.characteristics',
+  'Specific.environmental.goods..services.or.asset',
+  'Measure.of.environmental.change',
+  'Specific.environmental.stressor',
+  'Study.methodology.description',
+  'Information.on.the.valuation.equation.function',
+  'Estimated.values',
+  'Discount.rate',
+  'Abstract..English.',
+  'Abstract..French.'
+)
+
+#### HOW TO USE THIS SCRIPT: ####
+
+# 1.
+### Set the directory where the datafiles are stored.
+# At the moment this requires multiple (at least 2) files in .csv format.
+# This is because for some reason the EVRI data can't be downloaded in a single
+# batch, and requires multiple downloads. I simply downloaded each region
+# individually, and have collected the data within R here, being sure to drop
+# duplicate entries. This should give us the whole EVRI database. You could
+# Instead include only a subset of the database if you wanted for some reason.
+
+DataDirectory <- 'C:/Users/avery/Desktop/Research/USDA_ESV/EVRI'
+
+#2.
+### Construct your search in the "Your Query" section.
 
 #### Data Read-In ####
 # This will read every file of the type csv in the directory given.
@@ -104,36 +159,190 @@ Filelist <- list.files(
   pattern = "\\.csv"
 )
 
-## Collapses all the files from Filelist into a single dataframe.
-DATA <- lapply(
-  Filelist,
-  FUN=read.csv,
-  header = T,
-  sep = ",",
-  quote = "\""
-  ) %>%
-  do.call("rbind", .) %>%
-  unique()
+## Collapses all the files from Filelist into a single dataframe if necessary.
+DATA <- if (length(Filelist > 1)) {
+    lapply(
+      Filelist,
+      FUN=read.csv,
+      header = T,
+      sep = ",",
+      quote = "\""
+    ) %>%
+    do.call("rbind", .) %>%
+    unique()
+  } else {
+    read.csv(
+      Filelist, 
+      header = T,
+      sep = ",",
+      quote = "\"")
+  }
+  
+## Creates a dataframe with the messy string vars expanded into dummy columns
+DATAexpanded <- DATA %>%
+  CleanMessyStrings(AllMessyStrings)
+# For reasons beyond comprehension, the facet 'Human health' shows up in both 
+# General.environmental.assets and in General.type.of.goods.and.services.valued
+# They do not however have the same values for all entries. Yikes.
+# This fixes that issue, by appending a number to any subsequent entry of a
+# non-unique variable name. 
+# In this case 'Human health' in General.type.of.goods.and.services.valued
+# becomes 'Human health.1'
+DATAexpanded <- DATAexpanded[,c(1:length(DATAexpanded))]
 
-#### Here is a list of EVRI variables which appear to be messy strings: ####
-## It seems they never repeat level names, so we dont have to handle duplicates.
-## use MessyStringLevels(DATA, "variable") to see available levels.
+
+  #### Recoding Tiered Facets ####
+## Some values should be tiered, but are not.
+# i.e. to get all "Animal" studies you need to include all of:
+# "Fish", "Mammals", "Endangered species", "Birds", "Invertebrates", & "Animals"
+# This can be fixed by mutating the dummies for the higher tiers to be 1 if any
+# of their sub-tiers are 1. This has to be done by hand though:
+DATAexpanded <- DATAexpanded %>%
+  mutate(
+    
+  )
+
+#### Your Query ####
+
+## Here is a list of EVRI variables which appear to be messy strings: ###
+# It seems they never repeat level names, so we dont have to handle duplicates.
+# Available levels are variable names in DATAexpanded coded as dummies.
+#
+# use MessyStringLevels(DATA, "variable") to see available levels.
 #
 # Checked Aug. 20, 2022. on full EVRI dataset
 #
+# Variable                                    # of Levels, notable variables
+#___________________________________________|___________________________________
 # Country                                   : (176 unique)
-# General.environmental.assets              : (47 unique, 'Other assets')
-# General.type.of.goods.and.services.valued : (6 unique)
+# General.environmental.assets              : (47 unique, 'Other assets', 'Human health')
+# General.type.of.goods.and.services.valued : (6 unique, 'Human health.1')
 # Environmental.stressor                    : (14 unique)
 # Study.type                                : (3 unique)
 # Available.information.within.study        : (7 unique)
 # Years.of.data                             : (92 unique)
 # Economic.measure.s.                       : (10 unique, 'Other')
 # Valuation.technique.s.                    : (24 unique)
+# Document.type                             : (8 unique)
 
-A <- ColToDummy(DATA, "General.environmental.assets")
+### Construct Your Query
+# see 'Useful Variable Collections' for some shortcuts.
 
-####
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    ##### Messy String / Facet operators help ####
+    # Facets from the messy string variables can be filtered for by their new
+    # variable names as logical operators:
+    #
+    # Ex:
+    # Study.type has 3 levels; 
+    # "Primary", "Secondary/benefits transfers", & "Meta/synthesis analysis"
+    # 
+    # Primary == T  # will provide only primary studies and exclude Secondary or
+    #               # Meta studies.
+    # 
+    # Logical operators can be used to create very specific queries.
+    # (Variables with spaces can be indexed with backticks)
+    #
+    # Primary == T & (`Willingness to pay` == T | `Willingness to accept`)
+    #               # This will provide all primary studies on WTP or WTA.
+    #
+    #
+    ##### Keyword Searches help ####
+    # Context fields (or any variable) can be searched over for keywords via 
+    # regular expressions in stringr::str_detect
+    #
+    # Ex:
+    # Abstract..English. contains a short description of each study.
+    #
+    # str_detect(Abstract..English., "Birds|Bees")
+    #               # This will provide any study which contains
+    #               # 'Birds' or 'Bees' 
+    #
+    # str_detect(Abstract..English., "(?i)Birds|Bees")
+    #               # This does the same as before, but uses a regex modifier to
+    #               # to make the search case insensitive. 
+    #
+    #
+    # Facet Operators and Keyword searches can of course be used together for
+    # even more refined queries.
+    #
+    # Primary == T & str_detect(Abstract..English., "(?i)Birds|Bees")
+    #
+    #
+    # Multiple context field variables can be searched over by passing them to
+    # str_detect concatenated.
+    #
+    # Primary == T & str_detect(
+    #   paste0(
+    #     Abstract..English.,
+    #     Study.methodology.description,
+    #     Measure.of.environmental.change
+    #     ),
+    #   "(?i)Birds|Bees"
+    #   )
+    #
+    # Here is a search over all* context fields:
+    #
+    # Primary == T & str_detect(
+    #   paste0(
+    #     Study.Title,
+    #     Country,
+    #     State...province,
+    #     Location,
+    #     Study.population.characteristics,
+    #     Specific.environmental.goods..services.or.asset,
+    #     Measure.of.environmental.change,
+    #     Specific.environmental.stressor,
+    #     Study.methodology.description,
+    #     Information.on.the.valuation.equation.function,
+    #     Estimated.values,
+    #     Discount.rate,
+    #     Abstract..English.,
+    #     Abstract..French.
+    #     ),
+    #   "(?i)Birds|Bees"
+    #   )
+    #
+    #####
+    
+    # Primary == T & str_detect(
+    #   paste0(
+    #     Study.Title,
+    #     Country,
+    #     State...province,
+    #     Location,
+    #     Study.population.characteristics,
+    #     Specific.environmental.goods..services.or.asset,
+    #     Measure.of.environmental.change,
+    #     Specific.environmental.stressor,
+    #     Study.methodology.description,
+    #     Information.on.the.valuation.equation.function,
+    #     Estimated.values,
+    #     Discount.rate,
+    #     Abstract..English.,
+    #     Abstract..French.
+    #   ),
+    #   "(?i)Birds|Bees"
+    # )
+    
+    Primary == T & 
+    Journal == T &
+    (
+      Fish == T | 
+      Mammals == T | 
+      `Endangered species` == T | 
+      Birds == T | 
+      Invertebrates == T |
+      Animals == T
+    )
+    
+    ####
+  )
+
+#### Summary and Table Outputs ####
+
+
 # Debug stuff #####
 
 ## generates a simplified test dataset
