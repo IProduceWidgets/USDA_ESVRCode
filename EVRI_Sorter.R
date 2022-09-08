@@ -1,5 +1,6 @@
 ## THIS CODE IS FOR PULLING CUSTOM QUERIES FROM THE EVRI DATABASE ##
 #### Libraries ####
+require(writexl)
 require(rlang)
 require(stringi)
 require(data.table)
@@ -137,6 +138,12 @@ AllContextFields <- c(
 # Instead include only a subset of the database if you wanted for some reason.
 
 DataDirectory <- 'C:/Users/avery/Desktop/Research/USDA_ESV/EVRI'
+
+OutputDirectory <- 'C:/Users/avery/Desktop/Research/USDA_ESV/EVRIQueries'
+
+QueryResultsFileName <- 'RESULTSFILENAME.xlsx' #these will export as .xlsx
+
+QuerySummaryFileName <- 'SUMMARYFILENAME.xlsx' # ^
 
 #2.
 ### Construct your search in the "Your Query" section.
@@ -341,7 +348,7 @@ DATAexpanded <- DATAexpanded %>%
 #### Queries / Query Help ####
 
 ## Here is a list of EVRI variables which appear to be messy strings: ###
-# It seems they never repeat level names, so we don't have to handle duplicates.
+# Levels names only repeat once for the perplexing Human.health variable.
 # Available levels are variable names in DATAexpanded coded as dummies.
 #
 # use MessyStringLevels(DATA, "variable") to see available levels.
@@ -388,6 +395,9 @@ QueryOut <- DATAexpanded %>%
     # Context fields (or any variable) can be searched over for keywords via 
     # regular expressions in stringr::str_detect
     #
+    # See the below link for a list of recognized Regex Operators
+    # https://rdrr.io/cran/stringi/man/about_search_regex.html
+    #
     # Ex:
     # Abstract..English. contains a short description of each study.
     #
@@ -424,54 +434,29 @@ QueryOut <- DATAexpanded %>%
     # Here is a search over all* context fields:
     #
     # Primary == T & str_detect(
-    #   paste0(
-    #     Study.Title,
-    #     Country,
-    #     State...province,
-    #     Location,
-    #     Study.population.characteristics,
-    #     Specific.environmental.goods..services.or.asset,
-    #     Measure.of.environmental.change,
-    #     Specific.environmental.stressor,
-    #     Study.methodology.description,
-    #     Information.on.the.valuation.equation.function,
-    #     Estimated.values,
-    #     Discount.rate,
-    #     Abstract..English.,
-    #     Abstract..French.
-    #     ),
+    #   paste0(!!!syms(AllContextFields)),
+    #         #^ This turns the list of variable names from strings to symbols.
     #   "(?i)Birds|Bees"
     #   )
     #
     ##### Your Query #####
  # Create your query here.   
-    Primary == T &
-    (Journal == T | `Report (government/non-government)` == T) &
-    Animals == T &
+ 
+   # This is facet binary operators
+    # Primary == T &
+    # (Journal == T | `Report (government/non-government)` == T) &
+    #  `Air General` == T 
+   # This is the Keyword/regex search
     str_detect(
-      paste0(
-        Study.Title,
-        Country,
-        State...province,
-        Location,
-        Study.population.characteristics,
-        Specific.environmental.goods..services.or.asset,
-        Measure.of.environmental.change,
-        Specific.environmental.stressor,
-        Study.methodology.description,
-        Information.on.the.valuation.equation.function,
-        Estimated.values,
-        Discount.rate,
-        Abstract..English.,
-        Abstract..French.
-      ),
-      "(?i)Wolf|Wolves"
+      paste0(!!!syms(AllContextFields)),
+      "(?i)(Wolf)|(Wolves)"
     )
  
-  ####
+  #### This is the end of the query
 )
 
 #### Summary and Table Outputs ####
+# Feel free to add extra relevant variables and summaries I may have left off. 
 
 # subsetting to relevant vars.
 QueryResults <- QueryOut %>%
@@ -491,23 +476,28 @@ QuerySummary <- QueryOut %>%
     PubYearMin = min(Publication.year),
     DataYearMax = max(MessyStringLevels(.,"Years.of.data")),
     DataYearMin = min(MessyStringLevels(.,"Years.of.data")),
-    Countries = list(MessyStringLevels(., "Country"))
+    Countries = toString(MessyStringLevels(., "Country"))
   )
   
-  
+# Output queries as .xlsx for easy adding to MS office suite
+
+write_xlsx(QueryResults, file.path(OutputDirectory, QueryResultsFileName))
+write_xlsx(QuerySummary, file.path(OutputDirectory, QuerySummaryFileName))
+
 
 # Debug stuff #####
 
 ## generates a simplified test dataset
-testN <- 10 # change this to get a larger test dataframe. 1000 works well.
-TestData <- data.table(ID = c(1:testN), messy_string = "") %>%
-  rowwise %>%
-  transmute(
-    ID,
-    messy_string = paste(
-      stri_rand_strings(sample(1:5, 1, replace=TRUE), 2, pattern = "[a-z]"),
-      collapse="|"
-    )
-  ) %>%
-  ungroup()
+# 
+# testN <- 100 # change this to get a larger test dataframe. 1000 works well.
+# TestData <- data.table(ID = c(1:testN), messy_string = "") %>%
+#   rowwise %>%
+#   transmute(
+#     ID,
+#     messy_string = paste(
+#       stri_rand_strings(sample(1:5, 1, replace=TRUE), 2, pattern = "[a-z]"),
+#       collapse="|"
+#     )
+#   ) %>%
+#   ungroup()
 
