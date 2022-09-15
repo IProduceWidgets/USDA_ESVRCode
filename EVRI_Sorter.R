@@ -145,12 +145,23 @@ QueryResultsFileName <- 'RESULTSFILENAME.xlsx' #these will export as .xlsx
 
 QuerySummaryFileName <- 'SUMMARYFILENAME.xlsx' # ^
 
+# Turning this on will run all the queries from the initial gap anlysis
+# this script was built for from 2022.
+
+Gap_Analysis_Queries_Auto = T
+
 #2.
 ### Construct your search in the "Your Query" section.
 # You can use both logical operators and/or regex keyword / pattern matching.
 
 #3.
 ### Summary and Table Outputs
+# You can specify different summary statistics about the datasets in the summary
+# section if you would like. This code also exports a .xlsx file with the full
+# results of the query you run, in the event you would like to use it in another
+# application. 
+#
+# The Repec / Citec APIs may be of interest for future citation related studies.
 
 #### Data Read-In ####
 # This will read every file of the type csv in the directory given.
@@ -199,7 +210,6 @@ DATAexpanded <- DATA %>%
 # In this case 'Human health' in General.type.of.goods.and.services.valued
 # becomes 'Human health.1'
 DATAexpanded <- DATAexpanded[,c(1:length(DATAexpanded))]
-
 
   #### Recoding Tiered Facets ####
 ## Some values should be tiered, but are not.
@@ -345,7 +355,13 @@ DATAexpanded <- DATAexpanded %>%
       )
   )
 
+
 #### Queries / Query Help ####
+
+# Run all the queries for the Gap analysis Write-up iff True
+if(Gap_Analysis_Queries_Auto == T) {
+  source("Gap_Analysis_Queries.R")
+}
 
 ## Here is a list of EVRI variables which appear to be messy strings: ###
 # Levels names only repeat once for the perplexing Human.health variable.
@@ -443,14 +459,15 @@ QueryOut <- DATAexpanded %>%
  # Create your query here.   
  
    # This is facet binary operators
-    # Primary == T &
-    # (Journal == T | `Report (government/non-government)` == T) &
+    Primary == T &
+    (Journal == T | `Report (government/non-government)` == T)
     #  `Air General` == T 
+ 
    # This is the Keyword/regex search
-    str_detect(
-      paste0(!!!syms(AllContextFields)),
-      "(?i)(Wolf)|(Wolves)"
-    )
+    # str_detect(
+    #   paste0(!!!syms(AllContextFields)),
+    #   "(?i)(Wolf)|(Wolves)"
+    # )
  
   #### This is the end of the query
 )
