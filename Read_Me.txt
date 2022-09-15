@@ -43,3 +43,31 @@ your liking.
 The exported .xlsx files will appear in the OutputDirectory you specified
 earlier, and are exported as .xslx for ease of incorporation into the microsoft
 office suite.
+
+________________________________________________________________________________
+
+This code also contains a handful of useful functions which may help in understanding the dataset and why this script is helpful.
+
+The most useful of these is:
+
+MessyStringLevels(DATA, variable)
+
+Which takes a column of the dataframe DATA which contains a string that is
+actually a messy list of nominal factors. The function then returns a list of
+each unique factor in that list.
+
+This function is specific to the EVRI data due to the way it needs to parse the
+string. 
+
+
+
+CleanMessyStrings(DATA, variables, KeepMessy = T)
+
+Takes a dataframe with one or more columns with the EVRI style messy strings as 
+observations, and returns a dataframe where those messy columns in 'variables'
+have been speperated out into dummy columns named for the facet/factor where a 1
+indicates the publication was flagged as having that facet, and a 0 indicates it
+was not flagged as having that facet.
+
+Setting KeepMessy = False will drop the original 'variables' from the returned
+dataset. 
