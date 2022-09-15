@@ -145,7 +145,7 @@ QueryResultsFileName <- 'RESULTSFILENAME.xlsx' #these will export as .xlsx
 
 QuerySummaryFileName <- 'SUMMARYFILENAME.xlsx' # ^
 
-# Turning this on will run all the queries from the initial gap anlysis
+# Turning this on will run all the queries from the initial gap analysis
 # this script was built for from 2022.
 
 Gap_Analysis_Queries_Auto = T
