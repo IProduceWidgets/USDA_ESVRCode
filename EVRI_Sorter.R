@@ -127,6 +127,47 @@ AllContextFields <- c(
   'Abstract..French.'
 )
 
+OECD <- c(
+  'Australia',
+  'Austria',
+  'Belgium',
+  'Canada',
+  'Chile',
+  'Colombia',
+  'Costa Rica',
+  'Czech Republic',
+  'Denmark',
+  'Estonia',
+  'Finland',
+  'France',
+  'Germany',
+  'Greece',
+  'Hungary',
+  'Iceland',
+  'Ireland',
+  'Israel',
+  'Italy',
+  'Japan',
+  'South Korea', # careful! OECD sometimes reports this as 'Korea'
+  'Latvia',
+  'Lithuania',
+  'Luxembourg',
+  'Mexico',
+  'Netherlands',
+  'New Zealand',
+  'Norway',
+  'Poland',
+  'Portugal',
+  'Slovakia', # careful! OECD sometimes reports this as 'Slovak Republic'
+  'Slovenia',
+  'Spain',
+  'Sweden',
+  'Switzerland',
+  'Turkey',
+  'United Kingdom',
+  'United States'
+)
+
 #### HOW TO USE THIS SCRIPT: ####
 
 # 1.
@@ -495,6 +536,44 @@ QuerySummary <- QueryOut %>%
     DataYearMin = min(MessyStringLevels(.,"Years.of.data")),
     Countries = toString(MessyStringLevels(., "Country"))
   )
+
+QuerySummary <- bind_rows(
+  QueryOut %>%
+    summarise(
+      Studies = dplyr::n(),
+      PubYearMax = max(Publication.year),
+      PubYearMin = min(Publication.year),
+      DataYearMax = max(MessyStringLevels(.,"Years.of.data")),
+      DataYearMin = min(MessyStringLevels(.,"Years.of.data")),
+      Countries = toString(sort(MessyStringLevels(., "Country")))
+    ),
+  QueryOut %>%
+    rowwise() %>%
+    filter( # This is a filter for each of the 38 OECD nation as of Sept. 2022
+      max(!!!syms(OECD)) == 1
+    ) %>%
+    ungroup() %>%
+    summarise(
+      Studies = dplyr::n(),
+      PubYearMax = max(Publication.year),
+      PubYearMin = min(Publication.year),
+      DataYearMax = max(MessyStringLevels(.,"Years.of.data")),
+      DataYearMin = min(MessyStringLevels(.,"Years.of.data")),
+      Countries = "OECD Nations (2022)"
+    ),
+  QueryOut %>%
+    filter(`United States` == 1) %>%
+    summarise(
+      Studies = dplyr::n(),
+      PubYearMax = max(Publication.year),
+      PubYearMin = min(Publication.year),
+      DataYearMax = max(MessyStringLevels(.,"Years.of.data")),
+      DataYearMin = min(MessyStringLevels(.,"Years.of.data")),
+      Countries = "United States"
+    )
+  )
+  
+  
   
 # Output queries as .xlsx for easy adding to MS office suite
 
