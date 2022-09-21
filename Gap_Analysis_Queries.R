@@ -94,7 +94,9 @@ write_xlsx(QuerySummary,
            )
 
 CollectedQueries <- PivotYear(QueryOut) %>%
-  mutate(Q = "Top_level")
+  mutate(Q = "Top_level",
+         Pubs = length(unique(InternalID))
+  )
 
 
 ##### Animals, “Habitat|Habitats|Wildlife” ####
@@ -130,7 +132,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Wildlife_Habitat")
+      mutate(Q = "Wildlife_Habitat",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Animals, Birds ####
@@ -161,7 +165,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Birds")
+      mutate(Q = "Birds",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Animals, “Insect|Insects|Bees|Honeybees|Butterflies|Butterfly” #### 
@@ -197,7 +203,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Insects")
+      mutate(Q = "Insects",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Water general #### 
@@ -228,7 +236,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Water")
+      mutate(Q = "Water",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Water general, “Water quality” #### 
@@ -264,7 +274,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Water_Quality")
+      mutate(Q = "Water_Quality",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### "Aquatic&(Habitat|Habitats)” #### 
@@ -303,7 +315,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Aquatic_Habitat")
+      mutate(Q = "Aquatic_Habitat",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Air General #### 
@@ -333,7 +347,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Air")
+      mutate(Q = "Air",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Air General & "Air quality" #### 
@@ -369,7 +385,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Air_Quality")
+      mutate(Q = "Air_Quality",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Air General & "(Green House Gas)|(Green House)|(GHG)" #### 
@@ -405,7 +423,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "GHG")
+      mutate(Q = "GHG",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 #### Other Queries ####
@@ -437,7 +457,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Animal")
+      mutate(Q = "Animal",
+             Pubs = length(unique(InternalID))
+      )
   )
 
   ##### Land General #### 
@@ -467,7 +489,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Land")
+      mutate(Q = "Land",
+             Pubs = length(unique(InternalID))
+      )
   )
 
   ##### Duck #### 
@@ -503,7 +527,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Ducks")
+      mutate(Q = "Ducks",
+             Pubs = length(unique(InternalID))
+      )
   )
 
   ##### Horse #### 
@@ -539,7 +565,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Horses")
+      mutate(Q = "Horses",
+             Pubs = length(unique(InternalID))
+      )
   )
 
   ##### Wolf #### 
@@ -575,7 +603,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Wolves")
+      mutate(Q = "Wolves",
+             Pubs = length(unique(InternalID))
+      )
   )
 
   ##### Deer #### 
@@ -611,7 +641,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Deer")
+      mutate(Q = "Deer",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Landscape ####
@@ -642,7 +674,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Landscape")
+      mutate(Q = "Landscape",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Wetlands ####
@@ -673,7 +707,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Wetlands")
+      mutate(Q = "Wetlands",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Open Spaces ####
@@ -704,7 +740,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Open_Spaces")
+      mutate(Q = "Open_Spaces",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Ag land ####
@@ -735,7 +773,9 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Ag_land")
+      mutate(Q = "Ag_land",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 ##### Beaches ####
@@ -766,7 +806,138 @@ write_xlsx(QuerySummary,
 CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
-      mutate(Q = "Beaches")
+      mutate(Q = "Beaches",
+             Pubs = length(unique(InternalID))
+      )
+  )
+
+##### Plants #### 
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Plants` == T
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Plants_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Plants_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Plants",
+             Pubs = length(unique(InternalID))
+             )
+  )
+
+################# Econ Measures ##################
+#### Stated preference
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Stated Preference or Simulated Market Price` == T
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Stated_Pref_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Stated_Pref_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Stated_Pref",
+             Pubs = length(unique(InternalID))
+      )
+  )
+
+#### Revealed Preference
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Revealed Preference` == T
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Revealed_Pref_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Revealed_Pref_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Revealed_Pref",
+             Pubs = length(unique(InternalID))
+      )
+  )
+
+#### Market_Pricing
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Actual Market Pricing Methods` == T
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Market_Pricing_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Market_Pricing.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Market_Pricing",
+             Pubs = length(unique(InternalID))
+      )
   )
 
 #### Plots ####
