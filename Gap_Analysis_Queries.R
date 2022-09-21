@@ -105,7 +105,7 @@ QueryOut <- DATAexpanded %>%
     # This is facet binary operators
     Primary == T &
     (Journal == T | `Report (government/non-government)` == T) &
-    Animals == T &
+    #Animals == T &
     
     # This is the Keyword/regex search
     str_detect(
@@ -406,6 +406,367 @@ CollectedQueries <- CollectedQueries %>%
   bind_rows(
     PivotYear(QueryOut) %>%
       mutate(Q = "GHG")
+  )
+
+#### Other Queries ####
+  
+  ##### Animal General #### 
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Animals` == T
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Animal_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Animal_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Animal")
+  )
+
+  ##### Land General #### 
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Land General` == T
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Land_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Land_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Land")
+  )
+
+  ##### Duck #### 
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Animals` == T &
+      
+      # This is the Keyword/regex search
+      str_detect(
+        paste0(!!!syms(AllContextFields)),
+        "(?i)(Duck)|(Ducks)|(Drake)"
+      )
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Duck_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Duck_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Ducks")
+  )
+
+  ##### Horse #### 
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Animals` == T &
+      
+      # This is the Keyword/regex search
+      str_detect(
+        paste0(!!!syms(AllContextFields)),
+        "(?i)(Horse)|(pony)|(Stallion)|(Ponies)"
+      )
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Horse_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Horse_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Horses")
+  )
+
+  ##### Wolf #### 
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Animals` == T &
+      
+      # This is the Keyword/regex search
+      str_detect(
+        paste0(!!!syms(AllContextFields)),
+        "(?i)(Wolf)|(Wolves)"
+      )
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Wolf_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Wolf_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Wolves")
+  )
+
+  ##### Deer #### 
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Animals` == T &
+      
+      # This is the Keyword/regex search
+      str_detect(
+        paste0(!!!syms(AllContextFields)),
+        "(?i)(Deer)|(Doe)"
+      )
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Deer_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Deer_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Deer")
+  )
+
+##### Landscape ####
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Land General` == T &
+      Landscape == T
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Landscape_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Landscape_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Landscape")
+  )
+
+##### Wetlands ####
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Land General` == T &
+      `Wetlands/constructed wetlands` == T
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Wetlands_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Wetlands_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Wetlands")
+  )
+
+##### Open Spaces ####
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Land General` == T &
+      `Parks and open spaces` == T
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Open_Spaces_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Open_Spaces_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Open_Spaces")
+  )
+
+##### Ag land ####
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Land General` == T &
+      `Agricultural land` == T
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Ag_land_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Ag_land_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Ag_land")
+  )
+
+##### Beaches ####
+
+QueryOut <- DATAexpanded %>%
+  dplyr::filter(
+    
+    # This is facet binary operators
+    Primary == T &
+      (Journal == T | `Report (government/non-government)` == T) &
+      `Land General` == T &
+      `Beach` == T
+    
+    #### This is the end of the query
+  )
+
+
+QueryResults <- Analysis_Results(QueryOut)
+write_xlsx(QueryResults,
+           file.path(OutputDirectory, "Beaches_Publications.xlsx")
+)
+
+QuerySummary <- Analysis_Summary(QueryOut)
+write_xlsx(QuerySummary,
+           file.path(OutputDirectory, "Beaches_Summary.xlsx")
+)
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Beaches")
   )
 
 #### Plots ####

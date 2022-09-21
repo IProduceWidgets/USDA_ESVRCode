@@ -178,9 +178,9 @@ OECD <- c(
 # duplicate entries. This should give us the whole EVRI database. You could
 # Instead include only a subset of the database if you wanted for some reason.
 
-DataDirectory <- 'C:/Users/avery/Desktop/Research/USDA_ESV/EVRI'
+DataDirectory <- 'C:/Users/avery/Desktop/Research_Folder/USDA_ESV/EVRI'
 
-OutputDirectory <- 'C:/Users/avery/Desktop/Research/USDA_ESV/EVRIQueries'
+OutputDirectory <- 'C:/Users/avery/Desktop/Research_Folder/USDA_ESV/EVRIQueries'
 
 QueryResultsFileName <- 'RESULTSFILENAME.xlsx' #these will export as .xlsx
 
@@ -231,13 +231,15 @@ DATA <- if (length(Filelist > 1)) {
       quote = "\""
     ) %>%
     do.call("rbind", .) %>%
-    unique()
+    unique() %>%
+    mutate(InternalID = row_number())
   } else {
     read.csv(
       Filelist, 
       header = T,
       sep = ",",
-      quote = "\"")
+      quote = "\"") %>%
+      mutate(InternalID = row_number())
   }
   
 ## Creates a dataframe with the messy string vars expanded into dummy columns
