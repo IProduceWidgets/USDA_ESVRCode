@@ -46,7 +46,8 @@ office suite.
 
 ________________________________________________________________________________
 
-This code also contains a handful of useful functions which may help in understanding the dataset and why this script is helpful.
+This code also contains a handful of useful functions which may help in
+understanding the dataset and why this script is helpful.
 
 The most useful of these is:
 

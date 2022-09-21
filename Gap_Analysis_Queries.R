@@ -61,6 +61,16 @@ Analysis_Summary <- function(DATA){ # This is not a robust function.
   return(Summary)
 }  
 
+## A function that makes one giant dataframe from the queries for plotting.
+
+PivotYear <- function(QUERY){
+  QUERY %>%
+    pivot_longer(cols = matches("[1-2][0-9][0-9][0-9]"), names_to = "Year") %>%
+    filter(value == 1) %>%
+    select(-value) %>%
+    mutate(Year = as.numeric(Year))
+}
+
 ##### EVRI Top-Level Statistics ####
 
 QueryOut <- DATAexpanded %>%
@@ -82,6 +92,9 @@ QuerySummary <- Analysis_Summary(QueryOut)
 write_xlsx(QuerySummary,
            file.path(OutputDirectory, "Top_level_Summary.xlsx")
            )
+
+CollectedQueries <- PivotYear(QueryOut) %>%
+  mutate(Q = "Top_level")
 
 
 ##### Animals, “Habitat|Habitats|Wildlife” ####
@@ -114,6 +127,12 @@ write_xlsx(QuerySummary,
            file.path(OutputDirectory, "Wildlife_Habitat_Summary.xlsx")
            )
 
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Wildlife_Habitat")
+  )
+
 ##### Animals, Birds ####
 
 QueryOut <- DATAexpanded %>%
@@ -138,6 +157,12 @@ QuerySummary <- Analysis_Summary(QueryOut)
 write_xlsx(QuerySummary,
            file.path(OutputDirectory, "Birds_Summary.xlsx")
 )
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Birds")
+  )
 
 ##### Animals, “Insect|Insects|Bees|Honeybees|Butterflies|Butterfly” #### 
 
@@ -169,6 +194,12 @@ write_xlsx(QuerySummary,
            file.path(OutputDirectory, "Insects_Summary.xlsx")
 )
 
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Insects")
+  )
+
 ##### Water general #### 
 
 
@@ -193,6 +224,12 @@ QuerySummary <- Analysis_Summary(QueryOut)
 write_xlsx(QuerySummary,
            file.path(OutputDirectory, "Water_Summary.xlsx")
 )
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Water")
+  )
 
 ##### Water general, “Water quality” #### 
 
@@ -223,6 +260,12 @@ QuerySummary <- Analysis_Summary(QueryOut)
 write_xlsx(QuerySummary,
            file.path(OutputDirectory, "Water_Quality_Summary.xlsx")
 )
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Water_Quality")
+  )
 
 ##### "Aquatic&(Habitat|Habitats)” #### 
 
@@ -257,6 +300,12 @@ write_xlsx(QuerySummary,
            file.path(OutputDirectory, "Aquatic_Habitat_Summary.xlsx")
 )
 
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Aquatic_Habitat")
+  )
+
 ##### Air General #### 
 
 QueryOut <- DATAexpanded %>%
@@ -280,6 +329,12 @@ QuerySummary <- Analysis_Summary(QueryOut)
 write_xlsx(QuerySummary,
            file.path(OutputDirectory, "Air_Summary.xlsx")
 )
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Air")
+  )
 
 ##### Air General & "Air quality" #### 
 
@@ -311,6 +366,12 @@ write_xlsx(QuerySummary,
            file.path(OutputDirectory, "Air_Quality_Summary.xlsx")
 )
 
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "Air_Quality")
+  )
+
 ##### Air General & "(Green House Gas)|(Green House)|(GHG)" #### 
 
 QueryOut <- DATAexpanded %>%
@@ -340,3 +401,12 @@ QuerySummary <- Analysis_Summary(QueryOut)
 write_xlsx(QuerySummary,
            file.path(OutputDirectory, "GHG_Summary.xlsx")
 )
+
+CollectedQueries <- CollectedQueries %>%
+  bind_rows(
+    PivotYear(QueryOut) %>%
+      mutate(Q = "GHG")
+  )
+
+#### Plots ####
+source("Plots.R")

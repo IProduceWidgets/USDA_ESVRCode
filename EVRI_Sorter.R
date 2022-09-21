@@ -497,19 +497,19 @@ QueryOut <- DATAexpanded %>%
     #   )
     #
     ##### Your Query #####
- # Create your query here.   
- 
+ # Create your query here.
+
    # This is facet binary operators
     Primary == T &
     (Journal == T | `Report (government/non-government)` == T)
-    #  `Air General` == T 
- 
+    #  `Air General` == T
+
    # This is the Keyword/regex search
     # str_detect(
     #   paste0(!!!syms(AllContextFields)),
     #   "(?i)(Wolf)|(Wolves)"
     # )
- 
+
   #### This is the end of the query
 )
 
