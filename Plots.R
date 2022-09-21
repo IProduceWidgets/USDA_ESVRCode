@@ -127,7 +127,7 @@ print(
                 color = NA,
                 fill = "light blue",
                 alpha=.9,
-                width = 1.27
+                width = 2.05
     )+
     stat_summary(fun.data = lengthUnique,
                  geom = "text",
@@ -154,7 +154,7 @@ print(
                 color = NA,
                 fill = "light blue",
                 alpha=.9,
-                width = 1.27
+                width = 3.85
     )+
     stat_summary(fun.data = lengthUnique,
                  geom = "text",
@@ -225,7 +225,7 @@ print(
     geom_hline(yintercept=2022, color="Red")+
     #theme_grey()
     labs(title = "World Scope: (# obs)",
-         suntitle = "Animals",
+         subtitle = "Animals",
          x = "Densities: Data-Years x Publication")
 )
 
