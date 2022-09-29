@@ -941,4 +941,6 @@ CollectedQueries <- CollectedQueries %>%
   )
 
 #### Plots ####
+# This makes a bunch of plots using the collected queries, indexing the
+# different searches by the Q variable.
 source("Plots.R")

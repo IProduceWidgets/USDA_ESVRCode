@@ -21,8 +21,10 @@ for:
 
 This section contains some flags which need to be set, such as file source
 directory, and export file names. 
+
 It also contains a flag for running all the tables in the writup of the 2022 gap
-anlysis of ecosystem services. You can set this to False to prevent it from
+analysis of ecosystem services, as well as generating a series of violin and
+boxplots for that study. You can set this to False to prevent it from
 generating those files.
 
 ##### Your Query ##### (Line 458)
