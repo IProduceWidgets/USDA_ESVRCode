@@ -189,7 +189,7 @@ QuerySummaryFileName <- 'SUMMARYFILENAME.xlsx' # ^
 # Turning this on will run all the queries from the initial gap analysis
 # this script was built for from 2022.
 
-Gap_Analysis_Queries_Auto = T
+Gap_Analysis_Queries_Auto = F
 
 #2.
 ### Construct your search in the "Your Query" section.
@@ -502,15 +502,32 @@ QueryOut <- DATAexpanded %>%
  # Create your query here.
 
    # This is facet binary operators
-    Primary == T &
-    (Journal == T | `Report (government/non-government)` == T)
+    #Primary == T &
+    #(Journal == T | `Report (government/non-government)` == T)
     #  `Air General` == T
 
    # This is the Keyword/regex search
     # str_detect(
     #   paste0(!!!syms(AllContextFields)),
-    #   "(?i)(Wolf)|(Wolves)"
+    #   "(?i)(National Park)"
     # )
+ 
+  
+   # Lit search for Willard
+    Primary == T &
+    Journal == T &
+    `United States` == T &
+    `Parks and open spaces` == T &
+   (`Non-extractive uses` == T | `Passive uses` == T) &
+   (`Travel cost method - single site` == T |
+      `Travel cost method - RUM` == T |
+      `Travel cost method - multi-site - regional / hedonic` == T |
+      `Demand analysis` == T |
+      `Count data models` == T |
+      `Revealed Preference` == T
+    )
+   
+ 
 
   #### This is the end of the query
 )
@@ -565,7 +582,7 @@ QuerySummary <- bind_rows(
     )
   )
   
-  
+   
   
 # Output queries as .xlsx for easy adding to MS office suite
 
